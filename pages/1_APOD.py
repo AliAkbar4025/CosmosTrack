@@ -19,7 +19,7 @@ def main():
     data = st.session_state.data_today
     
     st.markdown("### Today's APOD:")
-    make_PicCard(data['hdurl'], data['title'], APODtype=data['media_type'])
+    make_PicCard(data.get('hdurl') or data.get('url'), data['title'], APODtype=data['media_type'])
     
     col1, col2 = st.columns(2)
     
@@ -68,7 +68,7 @@ def main():
 
     with col1:
         for item in first_half_APODs:
-            make_PicCard(item['hdurl'], item['title'], APODtype=item['media_type'])
+            make_PicCard(item.get('hdurl') or item.get('url'), item['title'], APODtype=item['media_type'])
             
             col_l, col_r = st.columns(2)
             
@@ -88,7 +88,7 @@ def main():
     
     with col2:
         for item in second_half_APODs:
-            make_PicCard(item['hdurl'], item['title'], APODtype=item['media_type'])
+            make_PicCard(item.get('hdurl') or item.get('url'), item['title'], APODtype=item['media_type'])
             
             col_l, col_r = st.columns(2)
             
@@ -143,7 +143,7 @@ def main():
         selectedAPOD = st.session_state.selectedAPOD
         
         st.markdown("### Your APOD:")
-        make_PicCard(selectedAPOD['hdurl'], selectedAPOD["title"], APODtype=selectedAPOD["media_type"])
+        make_PicCard(selectedAPOD.get('hdurl') or selectedAPOD.get("url"), selectedAPOD["title"], APODtype=selectedAPOD["media_type"])
 
         col_l, col_r = st.columns(2)
 
@@ -176,68 +176,59 @@ def main():
                 st.write(f"{n + 1}- {fav['title']}")
 
                 if fav["media_type"] == "image":
-
-                    st.image(fav["hdurl"])
-                
+                    st.image(fav.get("hdurl") or fav.get("url"))
                 else:
-
-                    st.video(fav["hdurl"])
+                    st.video(fav.get("hdurl") or fav.get("url"))
                 
                 col1, col2 = st.columns(2)
 
                 with col1:
-
                     if st.button("Show Details", use_container_width=True, key=f"{fav['date']}_detailsShow"):
-
                         show_details(fav)
                 
                 with col2:
-
                     if st.button("Remove", use_container_width=True, key=f"{fav['date']}_remove"):
-
-                        st.session_state.favorites.pop(n)
+                        st.session_state.favorites = [f for f in st.session_state.favorites if f['date'] != fav['date']]
                         api_helpers.save_favorites(st.session_state.favorites)
                         st.rerun()
 
                 st.divider()
 
         else:
-
             st.info("No favorites saved yet")
 
-@st.dialog("APOD Details",width="large",dismissible=True)
+
+@st.dialog("APOD Details", width="large", dismissible=True)
 def show_details(data):
 
-    response = requests.get(data["hdurl"])
+    url = data.get('hdurl') or data.get('url')
+    response = requests.get(url)
     contents = response.content
 
-    if data.get('hdurl') is not None:
+    if url:
 
         if data['media_type'] == "image":
-
-            st.image(data['hdurl'])
+            st.image(url)
             file_name = f"{data['title']}.png"
             mime_type = "image/png"
-            
-        
         else:
-
-            st.video(data['hdurl'])
+            st.video(url)
             file_name = f"{data['title']}.mp4"
             mime_type = "video/mp4"
-    
-    else:
 
+    else:
         st.error("Error in fetching APOD")
-    
+        return
+
     st.markdown(f"# Title: {data['title']}")
     st.markdown(f"## Date: {data['date']}")
 
     if data.get('copyright') is not None:
-
         st.markdown(f"## Copyright: {data['copyright']}")
-    st.markdown(f"## URL: {data['url']}")
+
+    st.markdown(f"## URL: {data.get('url')}")
     st.markdown(f"### Explanation: {data['explanation']}")
+
     st.download_button(
         "Download APOD",
         data=contents,
@@ -253,6 +244,7 @@ def make_PicCard(data, title, APODtype):
         st.image(data, caption=f"Title: {title}")
     else:
         st.video(data)
+
 
 if __name__ == '__main__':
     main()

@@ -34,7 +34,7 @@ def main():
             st.stop()
 
     NeoWsData = st.session_state.Data_NeoWs
-    dateRange = st.session_state.dateRange
+    dateRange = st.session_state.get("dateRange", "N/A")
 
     fig = go.Figure()
 
@@ -116,7 +116,7 @@ def main():
             neo_id.append(asteroid["neo_reference_id"])
             url_list.append(asteroid["nasa_jpl_url"])
 
-            velocity_kmh = asteroid["close_approach_data"][0]["relative_velocity"]["kilometers_per_hour"]
+            velocity_kmh = float(asteroid["close_approach_data"][0]["relative_velocity"]["kilometers_per_hour"])
             velocity_list.append(velocity_kmh)
 
     df = pd.DataFrame({
@@ -255,23 +255,23 @@ Rules:
 
     if "Ast_Report" not in st.session_state:
 
-        client = Groq(api_key=GROQ_API_KEY)
-        response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
-            messages=[{"role": "user", "content": report_prompt}],
-            max_tokens = 600
-        )
+        with st.spinner("Generating..."):
 
-        st.session_state.Ast_Report = response.choices[0].message.content
+            client = Groq(api_key=GROQ_API_KEY)
+            response = client.chat.completions.create(
+                model="llama-3.3-70b-versatile",
+                messages=[{"role": "user", "content": report_prompt}],
+                max_tokens=600
+            )
+
+            st.session_state.Ast_Report = response.choices[0].message.content
 
     if "chat_history" not in st.session_state:
-
         st.session_state.chat_history = []
 
     st.markdown("## 🤖 AI Analyst Report")
 
     with st.chat_message("assistant"):
-
         st.markdown(st.session_state.Ast_Report)
 
     st.divider()
@@ -279,9 +279,7 @@ Rules:
     st.markdown("## 💬 Ask the Analyst")
 
     for msg in st.session_state.chat_history:
-
         with st.chat_message(msg["role"]):
-
             st.markdown(msg["content"])
 
     question = st.chat_input("Ask anything about these asteroids...")
@@ -289,7 +287,6 @@ Rules:
     if question:
 
         with st.chat_message("user"):
-
             st.markdown(question)
 
         st.session_state.chat_history.append({"role": "user", "content": question})
@@ -297,19 +294,22 @@ Rules:
         messages = [{"role": "system", "content": system_prompt}]
         messages += st.session_state.chat_history[-10:]
 
-        client = Groq(api_key=GROQ_API_KEY)
-        response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
-            messages=messages,
-        )
-        answer = response.choices[0].message.content
+        with st.spinner("Generating"):
+
+            client = Groq(api_key=GROQ_API_KEY)
+            response = client.chat.completions.create(
+                model="llama-3.3-70b-versatile",
+                messages=messages,
+            )
+            answer = response.choices[0].message.content
 
         st.session_state.chat_history.append({"role": "assistant", "content": answer})
 
         with st.chat_message("assistant"):
-
+            
             st.markdown(answer)
 
 
 if __name__ == "__main__":
+
     main()

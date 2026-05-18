@@ -8,6 +8,7 @@ An interactive NASA data explorer built with Streamlit.
 - View today's Astronomy Picture of the Day
 - Look up APOD for any date
 - Save favourites
+- Favourites are stored locally and shared across sessions on the cloud version.
 
 ## ☄️ Page 2 — Asteroid Tracker
 - Live near-Earth asteroid data from NASA NeoWs API

@@ -45,12 +45,14 @@ Get your keys:
 
 ## 📦 Requirements
 
+```bash
 streamlit
 requests
 plotly
 pandas
 pillow
 python-dotenv
+```
 
 ---
 

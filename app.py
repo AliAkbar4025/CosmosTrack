@@ -11,7 +11,6 @@ pages = {
     "🌌 CosmosTrack": [
         st.Page("pages/1_APOD.py", title="Picture of the Day", icon="📸"),
         st.Page("pages/2_Asteroids.py", title="Asteroid Tracker", icon="☄️"),
-        st.Page("pages/3_ISS_Tracker.py", title="ISS Live Tracker", icon="🛸"),
     ]
 }
 

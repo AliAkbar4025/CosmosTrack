@@ -13,6 +13,16 @@ The application integrates NASA APIs, data visualization, and large language mod
 
 ---
 
+## Key Highlights
+
+- Real-time NASA API Integration
+- Near-Earth Asteroid Monitoring
+- Interactive Plotly Visualizations
+- AI-Powered Space Analysis
+- Multi-Page Streamlit Application
+
+---
+
 # Features
 
 ## 🌌 Astronomy Picture of the Day (APOD)

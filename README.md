@@ -2,8 +2,7 @@
 
 An AI-powered NASA exploration platform built with Streamlit that combines real-time space data, asteroid monitoring, interactive visualizations, and AI-assisted analysis.
 
-🌐 Live Demo: https://cosmostrack.streamlit.app
-
+[![Live Demo](https://img.shields.io/badge/Live-Demo-success?style=for-the-badge)](https://cosmostrack.streamlit.app)
 ---
 
 # Overview

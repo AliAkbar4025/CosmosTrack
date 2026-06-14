@@ -174,6 +174,5 @@ GROQ_API_KEY = "your_groq_api_key"
 
 # Author
 
-Ali Akbar
+**Agent Orbit team**
 
-AI Developer focused on AI Applications, RAG Systems, Agentic Workflows, and Intelligent Software built with Python.
